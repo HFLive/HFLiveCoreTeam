@@ -1,0 +1,32 @@
+name: Format
+
+on: push
+
+jobs:
+  format-code:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Run Prettier
+        run: npx prettier --write "README.md"
+
+      - name: Auto-commit formatted changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "style: 自动代码格式化"
+          file_pattern: "README.md"
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
